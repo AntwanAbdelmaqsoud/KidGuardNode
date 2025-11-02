@@ -4,7 +4,7 @@ import { User } from "../models/User";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, isParent } = req.body;
 
     const existing = await User.findOne({ email });
     if (existing)
@@ -14,7 +14,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const user = await User.create({
       email,
       password: hashedPassword,
-      isParent: false,
+      isParent: isParent || false,
     });
 
     res.status(201).json({ message: "User registered", user });

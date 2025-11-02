@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
 import {
-  updateUserNameOrPhoto,
+  updateUserInformation,
   deleteUserAccount,
 } from "../controllers/userController";
 
@@ -12,8 +12,8 @@ router.get("/", isAuthenticated, (req, res) => {
   res.json({ user: req.user });
 });
 
-// Update user information: name and photoUrl
-router.put("/", isAuthenticated, updateUserNameOrPhoto);
+// Update user information: name and/or photoUrl and/or isParent
+router.put("/", isAuthenticated, updateUserInformation);
 
 // Delete the currently authenticated user's account
 router.delete("/", isAuthenticated, deleteUserAccount);

@@ -28,17 +28,11 @@ app.use(
 );
 app.use(morgan("dev")); //http request logger
 
-connectDB();
-
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/parentChild", parentChildRoutes);
-
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running on port ${process.env.PORT || 3000}`);
-});
 
 export default app;

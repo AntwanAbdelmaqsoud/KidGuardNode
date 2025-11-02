@@ -1,19 +1,20 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
 
-export const updateUserNameOrPhoto = async (req: Request, res: Response) => {
+export const updateUserInformation = async (req: Request, res: Response) => {
   try {
-    const { name, photoUrl } = req.body;
-    if (!name && !photoUrl) {
+    const { name, photoUrl, isParent } = req.body;
+    if (!name && !photoUrl && isParent === undefined) {
       return res.status(400).json({ message: "No fields to update" });
     }
-    const userId = (req.user as any)?._id ?? (req.user as any)?.id;
+    const userId = (req.user as any)?._id;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
         ...(name && { name }),
-        ...(photoUrl && { photo: photoUrl }),
+        ...(photoUrl && { photoUrl }),
+        ...(isParent !== undefined && { isParent }),
       },
       { new: true }
     );
@@ -27,7 +28,7 @@ export const updateUserNameOrPhoto = async (req: Request, res: Response) => {
 
 export const deleteUserAccount = async (req: Request, res: Response) => {
   try {
-    const userId = (req.user as any)?._id ?? (req.user as any)?.id;
+    const userId = (req.user as any)?._id;
     await User.findByIdAndDelete(userId);
     req.logout((err) => {
       if (err) {
