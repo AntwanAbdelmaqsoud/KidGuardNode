@@ -17,9 +17,7 @@ describe("unAuthenticated /api/parentChild", () => {
     expect(res.status).toBe(401);
   });
   test("DELETE /link returns 401 when not authenticated", async () => {
-    const res = await request(app)
-      .delete("/api/parentChild/link")
-      .send({ childId: "child123" });
+    const res = await request(app).delete("/api/parentChild/link/child123");
     expect(res.status).toBe(401);
   });
 });
@@ -30,12 +28,12 @@ describe("Authenticated child user /api/parentChild", () => {
     agent = request.agent(app);
     // Simulate a child user login
     await agent.post("/api/auth/register").send({
-      email: "nonparent@example.com",
+      email: "nonparentone@example.com",
       password: "password123",
       isParent: false,
     });
     await agent.post("/api/auth/login").send({
-      email: "nonparent@example.com",
+      email: "nonparentone@example.com",
       password: "password123",
     });
   });
@@ -49,9 +47,7 @@ describe("Authenticated child user /api/parentChild", () => {
     );
   });
   test("DELETE /link returns 403 for non-parent user", async () => {
-    const res = await agent.delete("/api/parentChild/link").send({
-      childId: "child123",
-    });
+    const res = await agent.delete("/api/parentChild/link/child123");
     expect(res.status).toBe(403);
     expect(res.body).toHaveProperty(
       "message",
@@ -136,9 +132,7 @@ describe("Authenticated parent user /api/parentChild", () => {
     expect(verifyRes.status).toBe(200);
 
     // Now parent deletes the link referencing that child
-    const delRes = await agent.delete("/api/parentChild/link").send({
-      childId: childId,
-    });
+    const delRes = await agent.delete(`/api/parentChild/link/${childId}`);
     expect(delRes.status).toBe(200);
     expect(delRes.body).toHaveProperty("message", "Link deleted successfully");
   });

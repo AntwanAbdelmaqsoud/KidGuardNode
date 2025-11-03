@@ -11,7 +11,7 @@ const router = Router(); //api/parentChild/
 
 router.get("/link", isAuthenticated, generateLink);
 
-router.delete("/link", isAuthenticated, deleteLink);
+router.delete("/link/:id", isAuthenticated, deleteLink);
 
 router.post("/verify", isAuthenticated, verifyLink);
 

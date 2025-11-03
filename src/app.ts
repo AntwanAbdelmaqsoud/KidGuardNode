@@ -8,7 +8,7 @@ import userRoutes from "./routes/userRoutes";
 import parentChildRoutes from "./routes/parentChildLinkRoutes";
 import cors from "cors";
 import morgan from "morgan";
-import { connectDB } from "./db";
+import allowedZoneRoutes from "./routes/allowedZoneRoutes";
 
 const app = express();
 
@@ -34,5 +34,6 @@ app.use(passport.session());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/parentChild", parentChildRoutes);
+app.use("/api/allowedZone", allowedZoneRoutes);
 
 export default app;
