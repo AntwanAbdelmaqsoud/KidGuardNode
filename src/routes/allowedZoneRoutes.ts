@@ -8,8 +8,8 @@ import {
 
 const router = Router(); //api/allowedZone/
 
-router.post("/add", isAuthenticated, addZone);
-router.get("/list", isAuthenticated, listZones);
+router.post("/", isAuthenticated, addZone);
+router.get("/", isAuthenticated, listZones);
 router.delete("/:zoneId", isAuthenticated, removeZone);
 
 export default router;

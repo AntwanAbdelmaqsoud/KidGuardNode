@@ -1,9 +1,9 @@
 import request from "supertest";
 import app from "../../app";
 
-describe("unAuthenticated /api/allowedZone", () => {
-  test("POST /add returns 401 when not authenticated", async () => {
-    const response = await request(app).post("/api/allowedZone/add").send({
+describe("unAuthenticated /api/allowed-zone", () => {
+  test("POST / returns 401 when not authenticated", async () => {
+    const response = await request(app).post("/api/allowed-zone/").send({
       childId: "child1",
       zoneName: "Home",
       centerLat: 37.7749,
@@ -12,19 +12,19 @@ describe("unAuthenticated /api/allowedZone", () => {
     });
     expect(response.status).toBe(401);
   });
-  test("GET /list returns 401 when not authenticated", async () => {
-    const response = await request(app).get("/api/allowedZone/list").send({
+  test("GET / returns 401 when not authenticated", async () => {
+    const response = await request(app).get("/api/allowed-zone/").send({
       childId: "child1",
     });
     expect(response.status).toBe(401);
   });
   test("DELETE /:zoneId returns 401 when not authenticated", async () => {
-    const response = await request(app).delete(`/api/allowedZone/zone12345`);
+    const response = await request(app).delete(`/api/allowed-zone/zone12345`);
     expect(response.status).toBe(401);
   });
 });
 
-describe("Authenticated non-parent /api/allowedZone", () => {
+describe("Authenticated non-parent /api/allowed-zone", () => {
   let agent: request.Agent;
   beforeEach(async () => {
     agent = request.agent(app);
@@ -38,8 +38,8 @@ describe("Authenticated non-parent /api/allowedZone", () => {
       password: "password123",
     });
   });
-  test("POST /add returns 403 for non-parent user", async () => {
-    const response = await agent.post("/api/allowedZone/add").send({
+  test("POST / returns 403 for non-parent user", async () => {
+    const response = await agent.post("/api/allowed-zone/").send({
       childId: "child1",
       zoneName: "Home",
       centerLat: 37.7749,
@@ -48,19 +48,19 @@ describe("Authenticated non-parent /api/allowedZone", () => {
     });
     expect(response.status).toBe(403);
   });
-  test("GET /list returns 403 for non-parent user", async () => {
-    const response = await agent.get("/api/allowedZone/list").send({
+  test("GET / returns 403 for non-parent user", async () => {
+    const response = await agent.get("/api/allowed-zone/").send({
       childId: "child1",
     });
     expect(response.status).toBe(403);
   });
   test("DELETE /:zoneId returns 403 for non-parent user", async () => {
-    const response = await agent.delete(`/api/allowedZone/zone12345`);
+    const response = await agent.delete(`/api/allowed-zone/zone12345`);
     expect(response.status).toBe(403);
   });
 });
 
-describe("Authenticated parent /api/allowedZone", () => {
+describe("Authenticated parent /api/allowed-zone", () => {
   let agent: request.Agent;
   beforeEach(async () => {
     agent = request.agent(app);
@@ -74,8 +74,8 @@ describe("Authenticated parent /api/allowedZone", () => {
       password: "password",
     });
   });
-  test("POST /add creates allowed zone", async () => {
-    const response = await agent.post("/api/allowedZone/add").send({
+  test("POST / creates allowed zone", async () => {
+    const response = await agent.post("/api/allowed-zone/").send({
       childId: "child1",
       zoneName: "Home",
       centerLat: 37.7749,
@@ -86,16 +86,16 @@ describe("Authenticated parent /api/allowedZone", () => {
     expect(response.body).toHaveProperty("_id");
     expect(response.body).toHaveProperty("zoneName");
   });
-  test("GET /list retrieves allowed zones", async () => {
+  test("GET / retrieves allowed zones", async () => {
     // First, create a zone to ensure there is data to retrieve
-    const addRes = await agent.post("/api/allowedZone/add").send({
+    const Res = await agent.post("/api/allowed-zone/").send({
       childId: "child1",
       zoneName: "Home",
       centerLat: 37.7749,
       centerLng: -122.4194,
       radiusMeters: 100,
     });
-    const response = await agent.get("/api/allowedZone/list").send({
+    const response = await agent.get("/api/allowed-zone/").send({
       childId: "child1",
     });
     expect(response.status).toBe(200);
@@ -105,20 +105,20 @@ describe("Authenticated parent /api/allowedZone", () => {
   });
   test("DELETE /:zoneId removes allowed zone", async () => {
     // First, create a zone to delete
-    const addRes = await agent.post("/api/allowedZone/add").send({
+    const Res = await agent.post("/api/allowed-zone/").send({
       childId: "child1",
       zoneName: "Home",
       centerLat: 37.7749,
       centerLng: -122.4194,
       radiusMeters: 100,
     });
-    expect(addRes.status).toBe(201);
-    expect(addRes.body).toHaveProperty("_id");
-    expect(addRes.body).toHaveProperty("zoneName");
+    expect(Res.status).toBe(201);
+    expect(Res.body).toHaveProperty("_id");
+    expect(Res.body).toHaveProperty("zoneName");
 
     // Now delete the created zone
-    const zoneId = addRes.body._id;
-    const deleteRes = await agent.delete(`/api/allowedZone/${zoneId}`);
+    const zoneId = Res.body._id;
+    const deleteRes = await agent.delete(`/api/allowed-zone/${zoneId}`);
     expect(deleteRes.status).toBe(204);
   });
 });

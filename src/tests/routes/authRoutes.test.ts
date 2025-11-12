@@ -42,7 +42,7 @@ describe("Auth (local) integration", () => {
     expect(loginRes.body.user).toHaveProperty("email", "login@example.com");
 
     // subsequent request should be authenticated
-    const whoami = await agent.get("/api/user");
+    const whoami = await agent.get("/api/user/me");
     expect(whoami.status).toBe(200);
     expect(whoami.body).toHaveProperty("user");
     expect(whoami.body.user).toHaveProperty("email", "login@example.com");

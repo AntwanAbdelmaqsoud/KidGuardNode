@@ -1,28 +1,28 @@
 import request from "supertest";
 import app from "../../app";
 
-describe("unAuthenticated /api/parentChild", () => {
-  test("GET /link returns 401 when not authenticated", async () => {
-    const res = await request(app).get("/api/parentChild/link");
+describe("unAuthenticated /api/parent-child", () => {
+  test("GET /code/generate returns 401 when not authenticated", async () => {
+    const res = await request(app).get("/api/parent-child/code/generate");
     expect(res.status).toBe(401);
   });
   test("GET /children returns 401 when not authenticated", async () => {
-    const res = await request(app).get("/api/parentChild/children");
+    const res = await request(app).get("/api/parent-child/children");
     expect(res.status).toBe(401);
   });
-  test("POST /verify returns 401 when not authenticated", async () => {
+  test("POST /code/verify returns 401 when not authenticated", async () => {
     const res = await request(app)
-      .post("/api/parentChild/verify")
+      .post("/api/parent-child/code/verify")
       .send({ code: "somecode" });
     expect(res.status).toBe(401);
   });
   test("DELETE /link returns 401 when not authenticated", async () => {
-    const res = await request(app).delete("/api/parentChild/link/child123");
+    const res = await request(app).delete("/api/parent-child/link/child123");
     expect(res.status).toBe(401);
   });
 });
 
-describe("Authenticated child user /api/parentChild", () => {
+describe("Authenticated child user /api/parent-child", () => {
   let agent: request.Agent;
   beforeEach(async () => {
     agent = request.agent(app);
@@ -38,8 +38,8 @@ describe("Authenticated child user /api/parentChild", () => {
     });
   });
 
-  test("GET /link returns 403 for non-parent user", async () => {
-    const res = await agent.get("/api/parentChild/link");
+  test("GET /code/generate returns 403 for non-parent user", async () => {
+    const res = await agent.get("/api/parent-child/code/generate");
     expect(res.status).toBe(403);
     expect(res.body).toHaveProperty(
       "message",
@@ -47,7 +47,7 @@ describe("Authenticated child user /api/parentChild", () => {
     );
   });
   test("DELETE /link returns 403 for non-parent user", async () => {
-    const res = await agent.delete("/api/parentChild/link/child123");
+    const res = await agent.delete("/api/parent-child/link/child123");
     expect(res.status).toBe(403);
     expect(res.body).toHaveProperty(
       "message",
@@ -55,14 +55,14 @@ describe("Authenticated child user /api/parentChild", () => {
     );
   });
   test("GET /children returns 403 for non-parent user", async () => {
-    const res = await agent.get("/api/parentChild/children");
+    const res = await agent.get("/api/parent-child/children");
     expect(res.status).toBe(403);
     expect(res.body).toHaveProperty(
       "message",
       "Forbidden: user must be a parent"
     );
   });
-  test("POST /verify returns 200 for non-parent user", async () => {
+  test("POST /code/verify returns 200 for non-parent user", async () => {
     const parentAgent = request.agent(app);
     await parentAgent.post("/api/auth/register").send({
       email: "parent@example.com",
@@ -73,15 +73,15 @@ describe("Authenticated child user /api/parentChild", () => {
       email: "parent@example.com",
       password: "password123",
     });
-    const linkRes = await parentAgent.get("/api/parentChild/link");
+    const linkRes = await parentAgent.get("/api/parent-child/code/generate");
     const res = await agent
-      .post("/api/parentChild/verify")
+      .post("/api/parent-child/code/verify")
       .send({ code: linkRes.body.code });
     expect(res.status).toBe(200);
   });
 });
 
-describe("Authenticated parent user /api/parentChild", () => {
+describe("Authenticated parent user /api/parent-child", () => {
   let agent: request.Agent;
   beforeEach(async () => {
     agent = request.agent(app);
@@ -96,8 +96,8 @@ describe("Authenticated parent user /api/parentChild", () => {
       password: "password123",
     });
   });
-  test("GET /link returns 200 for parent user", async () => {
-    const res = await agent.get("/api/parentChild/link");
+  test("GET /code/generate returns 200 for parent user", async () => {
+    const res = await agent.get("/api/parent-child/code/generate");
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("code");
     expect(res.body).toHaveProperty("expiresAt");
@@ -105,7 +105,7 @@ describe("Authenticated parent user /api/parentChild", () => {
 
   test("DELETE /link returns 200 for parent user", async () => {
     // Create a link first and grab the verification code
-    const linkRes = await agent.get("/api/parentChild/link");
+    const linkRes = await agent.get("/api/parent-child/code/generate");
     expect(linkRes.status).toBe(200);
     const code = linkRes.body.code;
 
@@ -125,20 +125,22 @@ describe("Authenticated parent user /api/parentChild", () => {
       password: "password123",
     });
 
-    const verifyRes = await childAgent.post("/api/parentChild/verify").send({
-      childID: childId,
-      code,
-    });
+    const verifyRes = await childAgent
+      .post("/api/parent-child/code/verify")
+      .send({
+        childID: childId,
+        code,
+      });
     expect(verifyRes.status).toBe(200);
 
     // Now parent deletes the link referencing that child
-    const delRes = await agent.delete(`/api/parentChild/link/${childId}`);
+    const delRes = await agent.delete(`/api/parent-child/link/${childId}`);
     expect(delRes.status).toBe(200);
     expect(delRes.body).toHaveProperty("message", "Link deleted successfully");
   });
 
   test("GET /children returns 200 for parent user", async () => {
-    const res = await agent.get("/api/parentChild/children");
+    const res = await agent.get("/api/parent-child/children");
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("children");
     expect(Array.isArray(res.body.children)).toBe(true);

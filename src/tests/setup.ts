@@ -14,7 +14,6 @@ beforeAll(async () => {
   // Create in-memory server (or use system binary if configured)
   mongo = await MongoMemoryServer.create();
   const uri = mongo.getUri();
-  // Increase mongoose connection timeouts to allow slower startups
   await mongoose.connect(uri, {
     // How long to try selecting a server (ms)
     serverSelectionTimeoutMS: 120000,

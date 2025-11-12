@@ -7,13 +7,13 @@ import {
 } from "../controllers/parentChildLinkController";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
 
-const router = Router(); //api/parentChild/
+const router = Router(); //api/parent-child/
 
-router.get("/link", isAuthenticated, generateLink);
+router.get("/code/generate", isAuthenticated, generateLink);
+
+router.post("/code/verify", isAuthenticated, verifyLink);
 
 router.delete("/link/:id", isAuthenticated, deleteLink);
-
-router.post("/verify", isAuthenticated, verifyLink);
 
 router.get("/children", isAuthenticated, getChildrenOfParent);
 

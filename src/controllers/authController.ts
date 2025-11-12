@@ -4,7 +4,7 @@ import { User } from "../models/User";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { email, password, isParent } = req.body;
+    const { email, password, isParent, name } = req.body;
 
     const existing = await User.findOne({ email });
     if (existing)
@@ -15,15 +15,40 @@ export const registerUser = async (req: Request, res: Response) => {
       email,
       password: hashedPassword,
       isParent: isParent || false,
+      name,
     });
 
-    res.status(201).json({ message: "User registered", user });
+    res.status(201).json({
+      message: "User registered",
+      user: { email, id: user._id, name: user.name },
+    });
   } catch (err) {
     res.status(500).json({ error: err });
   }
 };
 
-export const loginUser = (req: Request, res: Response) => {
-  // User is authenticated via Passport middleware
-  res.json({ message: "Login successful", user: req.user });
+export const loginUser = (
+  req: Request,
+  res: Response,
+  err: any,
+  user: any,
+  info: any
+) => {
+  if (err)
+    return res.status(500).json({ success: false, message: "Server error" });
+  if (!user)
+    return res
+      .status(400)
+      .json({ success: false, message: info?.message || "Login failed" });
+
+  req.logIn(user, (err) => {
+    if (err)
+      return res.status(500).json({ success: false, message: "Login error" });
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: { id: user._id, email: user.email, name: user.name },
+    });
+  });
 };

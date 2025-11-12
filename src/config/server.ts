@@ -1,6 +1,6 @@
 // src/server.ts
 import http from "http";
-import app from "./app";
+import app from "../app";
 import { connectDB } from "./db";
 
 const PORT = Number(process.env.PORT) || 3000;

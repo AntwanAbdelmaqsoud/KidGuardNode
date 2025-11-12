@@ -9,6 +9,8 @@ import parentChildRoutes from "./routes/parentChildLinkRoutes";
 import cors from "cors";
 import morgan from "morgan";
 import allowedZoneRoutes from "./routes/allowedZoneRoutes";
+import collectedDataRoutes from "./routes/collectedDataRoutes";
+import { setupSwagger } from "./config/swagger";
 
 const app = express();
 
@@ -33,7 +35,10 @@ app.use(passport.session());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/parentChild", parentChildRoutes);
-app.use("/api/allowedZone", allowedZoneRoutes);
+app.use("/api/parent-child", parentChildRoutes);
+app.use("/api/allowed-zone", allowedZoneRoutes);
+app.use("/api/collected-data", collectedDataRoutes);
+
+setupSwagger(app);
 
 export default app;

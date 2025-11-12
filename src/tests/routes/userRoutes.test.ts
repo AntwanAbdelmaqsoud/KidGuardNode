@@ -3,11 +3,11 @@ import app from "../../app";
 
 describe("unAuthenticated /api/user", () => {
   test("GET returns 401 when not authenticated", async () => {
-    const res = await request(app).get("/api/user");
+    const res = await request(app).get("/api/user/me");
     expect(res.status).toBe(401);
   });
   test("PUT returns 401 when not authenticated", async () => {
-    const res = await request(app).put("/api/user").send({
+    const res = await request(app).put("/api/user/me").send({
       name: "New Name",
       photoUrl: "http://example.com/photo.jpg",
       isParent: true,
@@ -15,7 +15,7 @@ describe("unAuthenticated /api/user", () => {
     expect(res.status).toBe(401);
   });
   test("DELETE returns 401 when not authenticated", async () => {
-    const res = await request(app).delete("/api/user");
+    const res = await request(app).delete("/api/user/me");
     expect(res.status).toBe(401);
   });
 });
@@ -32,18 +32,18 @@ describe("Authenticated /api/user", () => {
       .send({ email: "test@example.com", password: "password" });
   });
   test("GET returns user info when authenticated", async () => {
-    const res = await agent.get("/api/user");
+    const res = await agent.get("/api/user/me");
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("user");
   });
 
   test("PUT returns 400 when data is invalid", async () => {
-    const res = await agent.put("/api/user").send({});
+    const res = await agent.put("/api/user/me").send({});
     expect(res.status).toBe(400);
   });
 
   test("PUT updates user name and returns 200", async () => {
-    const res = await agent.put("/api/user").send({
+    const res = await agent.put("/api/user/me").send({
       name: "New Name",
     });
     expect(res.status).toBe(200);
@@ -52,7 +52,7 @@ describe("Authenticated /api/user", () => {
   });
 
   test("PUT updates user photoUrl and returns 200", async () => {
-    const res = await agent.put("/api/user").send({
+    const res = await agent.put("/api/user/me").send({
       photoUrl: "http://example.com/photo.jpg",
     });
     expect(res.status).toBe(200);
@@ -61,7 +61,7 @@ describe("Authenticated /api/user", () => {
   });
 
   test("PUT updates user isParent and returns 200", async () => {
-    const res = await agent.put("/api/user").send({
+    const res = await agent.put("/api/user/me").send({
       isParent: true,
     });
     expect(res.status).toBe(200);
@@ -70,7 +70,7 @@ describe("Authenticated /api/user", () => {
   });
 
   test("PUT updates user name, photoUrl, isParent and returns 200", async () => {
-    const res = await agent.put("/api/user").send({
+    const res = await agent.put("/api/user/me").send({
       name: "New Name",
       photoUrl: "http://example.com/photo.jpg",
       isParent: true,
@@ -83,7 +83,7 @@ describe("Authenticated /api/user", () => {
   });
 
   test("DELETE deletes user account and returns 200", async () => {
-    const res = await agent.delete("/api/user");
+    const res = await agent.delete("/api/user/me");
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("message", "User account deleted");
   });
