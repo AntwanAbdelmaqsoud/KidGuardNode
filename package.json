@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/config/server.ts",
     "build": "tsc",
+    "postbuild": "node scripts/generate-swagger.js",
     "start": "node dist/config/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
