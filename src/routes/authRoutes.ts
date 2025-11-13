@@ -164,8 +164,8 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/login",
-    successRedirect: process.env.BASE_URL || "http://localhost:5173",
+    failureRedirect: `${process.env.BASE_URL}/login`,
+    successRedirect: process.env.BASE_URL,
   })
 );
 
@@ -188,7 +188,7 @@ router.post("/logout", (req: Request, res: Response) => {
     if (err) {
       return res.status(500).json({ error: err });
     }
-    res.redirect(process.env.BASE_URL || "http://localhost:5173");
+    res.redirect(process.env.BASE_URL || "/");
   });
 });
 

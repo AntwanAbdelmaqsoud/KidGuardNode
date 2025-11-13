@@ -28,12 +28,12 @@ app.use(morgan("dev")); //http request logger
 app.use(passport.initialize());
 app.use(passport.session());
 
+setupSwagger(app);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/parent-child", parentChildRoutes);
 app.use("/api/allowed-zone", allowedZoneRoutes);
 app.use("/api/collected-data", collectedDataRoutes);
-
-setupSwagger(app);
 
 export default app;

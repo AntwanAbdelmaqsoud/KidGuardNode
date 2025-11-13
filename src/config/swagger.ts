@@ -11,9 +11,9 @@ export function setupSwagger(app: Express) {
         version: "1.0.0",
         description: "Backend API Documentation",
       },
-      servers: [{ url: `http://localhost:${process.env.PORT || 3000}` }],
+      servers: [{ url: process.env.API_BASE_URL || "" }],
     },
-    apis: ["./src/routes/*.ts"], // scan your route files for @swagger annotations
+    apis: ["./src/routes/*.ts", "./dist/routes/*.js"], // scan your route files for @swagger annotations
   };
 
   const swaggerSpec = swaggerJSDoc(options);
