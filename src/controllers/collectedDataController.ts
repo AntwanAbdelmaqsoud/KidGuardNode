@@ -56,7 +56,10 @@ export const getAudioById = async (req: Request, res: Response) => {
 // GET /api/collected-data
 export const listCollectedData = async (req: Request, res: Response) => {
   try {
-    const dataList = await CollectedData.find().sort({ createdAt: -1 });
+    const { childId } = req.params;
+    const dataList = await CollectedData.find({ childId }).sort({
+      createdAt: -1,
+    });
     res.json(dataList);
   } catch (error) {
     console.error(error);

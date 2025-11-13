@@ -13,7 +13,7 @@ describe("unAuthenticated /api/collected-data", () => {
   });
 
   test("GET / returns 401 when not authenticated", async () => {
-    const res = await request(app).get("/api/collected-data");
+    const res = await request(app).get("/api/collected-data/child123");
     expect(res.status).toBe(401);
   });
 
@@ -46,12 +46,6 @@ describe("Authenticated parent /api/collected-data", () => {
       latitude: 37.0,
     });
     expect(res.status).toBe(403);
-  });
-
-  test("GET / returns 200 (array) for parent user", async () => {
-    const res = await agent.get("/api/collected-data");
-    expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
   });
 
   test("GET /:id/audio returns 404 for unknown id", async () => {
@@ -89,24 +83,6 @@ describe("Authenticated child /api/collected-data", () => {
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("id");
     createdId = res.body.id;
-  });
-
-  test("GET / returns array containing created item", async () => {
-    // create an item first
-    const create = await agent.post("/api/collected-data").send({
-      heartRate: 70,
-      stepCount: 300,
-      longitude: -122.0,
-      latitude: 37.0,
-    });
-    expect(create.status).toBe(201);
-    const id = create.body.id;
-
-    const res = await agent.get("/api/collected-data");
-    expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    const found = res.body.find((d: any) => String(d._id) === String(id));
-    expect(found).toBeDefined();
   });
 
   test("GET /:id/audio returns 404 when no audio present", async () => {

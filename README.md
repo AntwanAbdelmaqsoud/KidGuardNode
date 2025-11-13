@@ -22,11 +22,11 @@ GET /api/parent-child/children
 # ALLOWED ZONES
 
 POST /api/allowed-zones
-GET /api/allowed-zones
+GET /api/allowed-zones/:childId
 DELETE /api/allowed-zones/:zoneId
 
 # COLLECTED DATA
 
 POST /api/collected-data
 GET /api/collected-data/:id/audio
-GET /api/collected-data
+GET /api/collected-data/:childId

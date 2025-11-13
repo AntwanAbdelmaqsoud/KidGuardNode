@@ -20,11 +20,37 @@ const router = Router(); //api/user/
  *     responses:
  *       200:
  *         description: Current user info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   photoUrl:
+ *                     type: string
+ *                   isParent:
+ *                     type: boolean
  *       401:
  *         description: Not authenticated
  */
 router.get("/me", isAuthenticated, (req, res) => {
-  res.json({ user: req.user });
+  const user: any = req.user;
+  res.json({
+    user: {
+      _id: user._id,
+      email: user.email,
+      name: user.name ?? "",
+      photoUrl: user.photoUrl ?? "",
+      isParent: user.isParent ?? false,
+    },
+  });
 });
 
 // Update user information: name and/or photoUrl and/or isParent

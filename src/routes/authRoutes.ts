@@ -148,7 +148,7 @@ router.post("/login", (req, res, next) => {
  * @openapi
  * /api/auth/google:
  *   get:
- *     summary: Initiate Google OAuth2 login
+ *     summary: Initiate Google OAuth2 login. Users will be redirected to /login on failure and to / on success.
  *     tags:
  *       - Auth
  *     responses:
@@ -161,17 +161,6 @@ router.get(
 );
 
 // Google callback
-/**
- * @openapi
- * /api/auth/google/callback:
- *   get:
- *     summary: Google OAuth2 callback
- *     tags:
- *       - Auth
- *     responses:
- *       302:
- *         description: Redirect on success or failure
- */
 router.get(
   "/google/callback",
   passport.authenticate("google", {
@@ -185,9 +174,11 @@ router.get(
  * @openapi
  * /api/auth/logout:
  *   post:
- *     summary: Logout the current user and destroy session
+ *     summary: Logout the current user and destroy session. Redirects to / after successful logout.
  *     tags:
  *       - Auth
+ *     security:
+ *       - cookieAuth: []
  *     responses:
  *       302:
  *         description: Redirect to frontend after logout

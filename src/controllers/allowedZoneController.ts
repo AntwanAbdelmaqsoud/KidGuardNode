@@ -35,7 +35,7 @@ export const listZones = async (req: Request, res: Response) => {
       .status(403)
       .json({ message: "Forbidden: user must be a parent" });
   }
-  const { childId } = req.body;
+  const { childId } = req.params;
   if (!childId) {
     return res.status(400).json({ message: "Child ID is required" });
   }
